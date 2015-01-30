@@ -1,7 +1,7 @@
 // Agent sample_agent in project moodleTutor
 id(ID).
 nome(NOME).
-time(20000).
+time(2000).
 /* Initial beliefs and rules */
 
 /* Initial goals */

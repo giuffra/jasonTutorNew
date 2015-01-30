@@ -27,6 +27,7 @@ public class Bedel_Atc extends db_art {
 	String contextid;
 	ArrayList<String> id_grade_item_Tarefas_entregues;
 	ArrayList<String> lista_tarefas_avaliadas;
+	private boolean possuiNovaTarefa = false;
 
 	@OPERATION
 	public void setIDcourse(int id) {
@@ -47,6 +48,14 @@ public class Bedel_Atc extends db_art {
 	}
 
 	@OPERATION
+	public void possui_nova_tarefa(OpFeedbackParam<Boolean> p){
+		p.set(possuiNovaTarefa);
+	}
+	@OPERATION
+	public void limpa_nova_tarefa(){
+		possuiNovaTarefa=false;
+	}
+	@OPERATION
 	public ArrayList<String> lista_id_alunos_curso() throws SQLException,
 			ClassNotFoundException {
 		ArrayList<String> lista_alunos_curso = new ArrayList<String>();
@@ -61,7 +70,7 @@ public class Bedel_Atc extends db_art {
 
 		return lista_alunos_curso;
 	}
-	
+
 	@OPERATION
 	public ArrayList<String> lista_alunos_curso() throws SQLException,
 			ClassNotFoundException {
@@ -305,6 +314,8 @@ public class Bedel_Atc extends db_art {
 		 */
 		string = "SELECT * FROM mdl_assign WHERE course=" + idCourse;
 		ResultSet assignment = this.select(string);
+		string = "SELECT * FROM mdl_quiz WHERE course=" + idCourse;
+		ResultSet quiz = this.select(string);
 		while (assignment.next()) {
 			long timestamp = assignment.getLong("duedate");
 			timestamp = timestamp + 10800; // hora de assignment + 3 horas GMT
@@ -318,6 +329,12 @@ public class Bedel_Atc extends db_art {
 				// avisa para o professor que j� deve avaliar, pois passou da
 				// data limite de entrega
 				// Stem.out.println("tarefas entregues "+this.converte_item_instance_em_id_grade_item(assignment.getString("id")));
+			}
+			while (quiz.next()) {
+				if (quiz.getInt("timeclose") > 0) {
+					id_grade_item_Tarefas_entregues.add(this
+							.converte_item_instance_em_id_grade_item(quiz.getString("id")));	
+				}
 			}
 		}
 		this.fecharConexao();
@@ -369,6 +386,14 @@ public class Bedel_Atc extends db_art {
 		}
 		return id_module;
 	}
+	
+	double arredondar(double valor, int casas) {  
+	    double arredondado = valor;  
+	    arredondado *= (Math.pow(10, casas));    
+	        arredondado = Math.floor(arredondado);  
+	    arredondado /= (Math.pow(10, casas));  
+	    return arredondado;  
+	}  
 
 	@OPERATION
 	boolean verifica_avaliacao() throws SQLException, ClassNotFoundException {
@@ -416,7 +441,6 @@ public class Bedel_Atc extends db_art {
 					.getString("id_grade_items"));
 			// quantidade de tarefas que j� foram avaliadas no curso
 		}
-
 		if (count_itens_tarefas_avaliadas_curso < count_itens_nota) {
 
 			for (int i = 0; i < id_itens_nota.size(); i++) {
@@ -445,13 +469,14 @@ public class Bedel_Atc extends db_art {
 					.getString("id_grade_items"));
 		}
 		this.fecharConexao();
-		ArrayList<String> lista_alunos_curso = this.lista_id_alunos_curso();
 		this.conexaoBD();
 		// chama fun��o lista_alunos para pegar todos os alunos do curso
 		lista_tarefas_avaliadas = new ArrayList<String>();
+
 		for (int k = 0; k < lista_tarefas_nao_avaliadas.size(); k++) {
 			if (id_grade_item_Tarefas_entregues
 					.contains(lista_tarefas_nao_avaliadas.get(k))) {
+
 				string = "SELECT userid FROM mdl_grade_grades WHERE itemid="
 						+ lista_tarefas_nao_avaliadas.get(k)
 						+ " AND rawgrade != 'NULL'";
@@ -462,20 +487,12 @@ public class Bedel_Atc extends db_art {
 					lista_alunos_avaliados.add(alunos_avaliados
 							.getString("userid"));
 				}
-
-				if (lista_alunos_curso.size() == lista_alunos_avaliados.size()) {
-					// atualiza tabela tutor_tarefas_atualizadas, marcando os
-					// itens de avalia��o que est�o com todos alunos avaliados.
-					string = "UPDATE mdl_tutor_tarefas_avaliadas SET avaliada = '1' WHERE id_grade_items="
-							+ lista_tarefas_nao_avaliadas.get(k);
-					this.update(string);
-					lista_tarefas_avaliadas.add(lista_tarefas_nao_avaliadas
-							.get(k));
-				} else {
-					// avisa = true quando o professor tem avalia��es sem nota
-					// em todos os alunos
-					avisar = true;
-				}
+				// atualiza tabela tutor_tarefas_atualizadas, marcando os
+				// itens de avalia��o que est�o com todos alunos avaliados.
+				string = "UPDATE mdl_tutor_tarefas_avaliadas SET avaliada = '1' WHERE id_grade_items="
+						+ lista_tarefas_nao_avaliadas.get(k);
+				this.update(string);
+				lista_tarefas_avaliadas.add(lista_tarefas_nao_avaliadas.get(k));
 			}
 		}
 		this.fecharConexao();
@@ -622,7 +639,7 @@ public class Bedel_Atc extends db_art {
 			//
 			string = "SELECT * FROM mdl_course_modules WHERE id=" + idTarefa;
 			ResultSet course_module_idTarefa = this.select(string);
-			
+
 			if (course_module_idTarefa.next()) {
 				ass_module_grade_item.setId(course_module_idTarefa
 						.getString("id"));
@@ -660,7 +677,7 @@ public class Bedel_Atc extends db_art {
 			//
 			if (tarefa_avaliada) {
 				//
-				
+
 				string = "SELECT * FROM mdl_grade_grades WHERE itemid="
 						+ id_grade_item_idTarefa;
 				ResultSet notas_alunos_tarefas = this.select(string);
@@ -672,7 +689,7 @@ public class Bedel_Atc extends db_art {
 							.getString("userid"));
 					ass_nota_tarefa.setNota(Double
 							.parseDouble(notas_alunos_tarefas
-									.getString("rawgrade")));
+									.getString("finalgrade")));
 					lista_notas_alunos_tarefa.add(ass_nota_tarefa);
 				}
 				double notaComLog = 2;
@@ -712,10 +729,10 @@ public class Bedel_Atc extends db_art {
 					lista_alunos_nota_perfil.add(ass_nota_perfil);
 				}
 				int nro_calculo = 1;
-				string = "SELECT MAX(nro_calculo) as max_calculo FROM mdl_tutor_nota_perfil WHERE curso_id = "+idCourse;
+				string = "SELECT MAX(nro_calculo) as max_calculo FROM mdl_tutor_nota_perfil WHERE curso_id = "
+						+ idCourse;
 				ResultSet max_nro_calculo = this.select(string);
 
-				
 				boolean tem_mais = false;
 				int ultimo_nro_calculo = 0;
 				if (max_nro_calculo.next()) {
@@ -739,8 +756,9 @@ public class Bedel_Atc extends db_art {
 							string = "SELECT nota FROM mdl_tutor_nota_perfil WHERE aluno_id="
 									+ lista_alunos_nota_perfil.get(i)
 											.getId_aluno()
-									+ " AND nro_calculo=" + ultimo_nro_calculo
-									+ " AND curso_id = "+idCourse;
+									+ " AND nro_calculo="
+									+ ultimo_nro_calculo
+									+ " AND curso_id = " + idCourse;
 							ResultSet ultima_nota = this.select(string);
 
 							if (ultima_nota.next()) {
@@ -760,17 +778,16 @@ public class Bedel_Atc extends db_art {
 								+ ","
 								+ lista_alunos_nota_perfil.get(i).getId_aluno()
 								+ ", "
-								+ lista_alunos_nota_perfil.get(i).getNota()
+								+ arredondar(lista_alunos_nota_perfil.get(i).getNota(),2)
 								+ ", " + nro_calculo + " )";
-						
-						
+						this.possuiNovaTarefa  = true;
 						this.update(string);
 
 					}
 				}
 				//
 			} else {
-				// avisa que falta avaliar tarefa.
+				possuiNovaTarefa = false;
 			}
 		}
 		this.fecharConexao();
@@ -781,7 +798,8 @@ public class Bedel_Atc extends db_art {
 		this.conexaoBD();
 		String string;
 		//
-		string = "SELECT MAX(nro_calculo) as max_calculo FROM mdl_tutor_nota_perfil WHERE curso_id = "+idCourse;
+		string = "SELECT MAX(nro_calculo) as max_calculo FROM mdl_tutor_nota_perfil WHERE curso_id = "
+				+ idCourse;
 		ResultSet max_nro_calculo = this.select(string);
 
 		int ultimo_nro_calculo = 0;
@@ -792,8 +810,8 @@ public class Bedel_Atc extends db_art {
 			}
 		}
 
-		string = "SELECT * FROM mdl_tutor_nota_perfil WHERE curso_id = "+idCourse+" and nro_calculo="
-				+ ultimo_nro_calculo;
+		string = "SELECT * FROM mdl_tutor_nota_perfil WHERE curso_id = "
+				+ idCourse + " and nro_calculo=" + ultimo_nro_calculo;
 		ResultSet notas_alunos = this.select(string);
 
 		double soma_todas_notas = 0;
@@ -810,24 +828,24 @@ public class Bedel_Atc extends db_art {
 	@OPERATION
 	void cacula_valores_perfis() throws SQLException, ClassNotFoundException {
 
-		double media = this.calcula_media_perfil();
+		double media = arredondar(this.calcula_media_perfil(),2);
 		this.conexaoBD();
 		double media_basico = 0;
 		double media_avancado = 0;
-		
-		
-			if (media < 60) {
-				media = 60;
-			}
-			if (media > 80) {
-				media = 80;
-			}
-			media_basico = media - 6;
-			media_avancado = media + 6;
+
+		if (media < 60) {
+			media = 60;
+		}
+		if (media > 80) {
+			media = 80;
+		}
+		media_basico = media - 6;
+		media_avancado = media + 6;
 
 		int nro_calculo_medias = 1;
 		//
-		String string = "SELECT MAX(nro_calculo) as max_calculo FROM mdl_tutor_media_perfis WHERE  curso_id ="+this.idCourse;
+		String string = "SELECT MAX(nro_calculo) as max_calculo FROM mdl_tutor_media_perfis WHERE  curso_id ="
+				+ this.idCourse;
 		ResultSet max_nro_calculo_medias = this.select(string);
 
 		int ultimo_nro_calculo_medias = 0;
