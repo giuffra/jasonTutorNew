@@ -148,49 +148,6 @@ public class Gerente_Atc extends db_art {
 		}
 	}
 
-	// @OPERATION
-	// public void getIdLastCourse(OpFeedbackParam<Integer> I) {
-	// ResultSet Rs;
-	// try {
-	// Rs = super.sfw("id", "mdl_course", "summaryformat=1");
-	// if (Rs.next())
-	// I.set(Rs.getInt(1));
-	// } catch (ClassNotFoundException e) {
-	// e.printStackTrace();
-	//
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// }
-
-	// @OPERATION
-	// public void getIdLastUser(OpFeedbackParam<Integer> I) {
-	// ResultSet Rs;
-	// try {
-	// Rs = super.sf("id", "mdl_user");
-	// if (Rs.next())
-	// I.set(Rs.getInt(1));
-	// } catch (ClassNotFoundException e) {
-	// e.printStackTrace();
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// }
-
-	// @OPERATION
-	// public void getCourseName(int id, OpFeedbackParam<String> Name) {
-	// ResultSet Rs;
-	// try {
-	// Rs = super.sfw("fullname", "mdl_course", "id=" + id);
-	// Rs.next();
-	// Name.set(Rs.getString(1));
-	// } catch (ClassNotFoundException e) {
-	// e.printStackTrace();
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// }
-	// }
+	
 
 }
