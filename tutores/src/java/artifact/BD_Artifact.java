@@ -64,7 +64,8 @@ public class BD_Artifact extends Artifact {
 			Class.forName("org.gjt.mm.mysql.Driver");
 
 		// Registrado o driver, vamos estabelecer uma conexão
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/moodle291", "root", "");		
+			conn = DriverManager.getConnection("jdbc:mysql://posiate.inf.ufsc.br/moodle_cecilia", "cecilia", "cecilia");		
+
 					
 		} catch (ClassNotFoundException e) {
 			// Driver n�o encontrado
