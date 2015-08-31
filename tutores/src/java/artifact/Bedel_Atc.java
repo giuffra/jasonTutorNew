@@ -413,7 +413,7 @@ public class Bedel_Atc extends db_art {
 		while (itens_tarefas_avaliadas_curso.next()) {
 			count_itens_tarefas_avaliadas_curso++;
 			id_grade_items.add(itens_tarefas_avaliadas_curso
-					.getString("grade_items_id"));
+					.getString("id_grade_items"));
 			// quantidade de tarefas que j� foram avaliadas no curso
 		}
 
@@ -424,7 +424,7 @@ public class Bedel_Atc extends db_art {
 					// verifica se a tabela tarefas_avaliadas est� com todos os
 					// itens de avalia��o do curso nela, sen�o, insere os que
 					// faltam.
-					string = "INSERT INTO mdl_tutor_tarefas_avaliadas (curso_id, grade_items_id, avaliada) "
+					string = "INSERT INTO mdl_tutor_tarefas_avaliadas (curso_id, id_grade_items, avaliada) "
 							+ "VALUES ("
 							+ idCourse
 							+ ", "
@@ -433,7 +433,7 @@ public class Bedel_Atc extends db_art {
 				}
 			}
 		}
-		string = "SELECT grade_items_id FROM mdl_tutor_tarefas_avaliadas WHERE avaliada = '0' AND curso_id="
+		string = "SELECT id_grade_items FROM mdl_tutor_tarefas_avaliadas WHERE avaliada = '0' AND curso_id="
 				+ idCourse;
 		// devolve o id dos itens de avalia��o que n�o tiveram a avalia��o
 		// completada para todos os alunos.
@@ -442,7 +442,7 @@ public class Bedel_Atc extends db_art {
 		ArrayList<String> lista_tarefas_nao_avaliadas = new ArrayList<String>();
 		while (tarefas_nao_avaliadas.next()) {
 			lista_tarefas_nao_avaliadas.add(tarefas_nao_avaliadas
-					.getString("grade_items_id"));
+					.getString("id_grade_items"));
 		}
 		this.fecharConexao();
 		ArrayList<String> lista_alunos_curso = this.lista_id_alunos_curso();
@@ -466,7 +466,7 @@ public class Bedel_Atc extends db_art {
 				if (lista_alunos_curso.size() == lista_alunos_avaliados.size()) {
 					// atualiza tabela tutor_tarefas_atualizadas, marcando os
 					// itens de avalia��o que est�o com todos alunos avaliados.
-					string = "UPDATE mdl_tutor_tarefas_avaliadas SET avaliada = '1' WHERE grade_items_id="
+					string = "UPDATE mdl_tutor_tarefas_avaliadas SET avaliada = '1' WHERE id_grade_items="
 							+ lista_tarefas_nao_avaliadas.get(k);
 					this.update(string);
 					lista_tarefas_avaliadas.add(lista_tarefas_nao_avaliadas
@@ -647,7 +647,7 @@ public class Bedel_Atc extends db_art {
 				id_grade_item_idTarefa = id_grade_item.getString("id");
 			}
 
-			string = "SELECT avaliada FROM mdl_tutor_tarefas_avaliadas WHERE grade_items_id="
+			string = "SELECT avaliada FROM mdl_tutor_tarefas_avaliadas WHERE id_grade_items="
 					+ id_grade_item_idTarefa;
 			ResultSet avaliada = this.select(string);
 
