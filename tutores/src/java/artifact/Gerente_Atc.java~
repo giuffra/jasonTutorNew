@@ -94,13 +94,13 @@ public class Gerente_Atc extends db_art {
 
 	@OPERATION
 	public void inicia() {
-		System.out.println("Preparing DB tables...");
+		System.out.println("Preparando tabelas...");
 		iniciaTabelas();
 		iniciaCursos();
-		System.out.println("Courses started");
+		System.out.println("Cursos iniciados");
 		iniciaAlunos();
-		System.out.println("Users started");
-		System.out.println("Artifact started...");
+		System.out.println("Usuarios iniciados");
+		System.out.println("Artefato iniciado...");
 	}
 
 	@OPERATION

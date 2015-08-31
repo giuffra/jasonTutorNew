@@ -60,23 +60,23 @@ time(20000).
 .
 
 +!verifica_data_final_tarefa: true <-//feito uma vez por dia, para verificar se tem tarefas com data de entrega "vencida" e devem ser avaliadas.
-	.print("Final date of task verified");	
+	.print("verifiquei data final tarefaaaaaaaaaaaaaaaaaaaaaaaaaaaa ");	
 	verifica_data_final_tarefa; // inserir aqui os dados das tarefas que est�o com data final "vencida" como argumento.
 	!verifica_avaliacao. 
 
 +!verifica_avaliacao: true <- //se data_final_tarefa � true, ent�o verifica se j� foi avaliada.
 	verifica_avaliacao;
-	.print("Evaluation verified");
+	.print("verifiquei avaliacao");
 	!calcula_notas_perfil_alunos.
 
 +!calcula_notas_perfil_alunos: true <- //se tarefa foi avaliada ent�o calcula_notas_perfil_alunos
 	calcula_notas_perfil_alunos;
-	.print("profile grades estimated");
+	.print("calculei notas perfil");
 	!calcula_media_perfil.// inserir aqui os dados das tarefas que est�o com data final "vencida" como argumento.
 
 +!calcula_media_perfil: true <- //ap�s calcular a nota do perfil dos alunos deve calcular a media do perfil.
 //	calcula_media_perfil;
-	.print("average profile estimated");
+	.print("calculei media perfil");
 	!cacula_valores_perfis.
 
 +!cacula_valores_perfis: true<- //ap�s media do perfil deve calcular os valores do perfil.
