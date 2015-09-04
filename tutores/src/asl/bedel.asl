@@ -1,7 +1,7 @@
 // Agent sample_agent in project moodleTutor
 id(ID).
 nome(NOME).
-time(20000).
+time(20).  /* time(20000).*/
 /* Initial beliefs and rules */
 
 /* Initial goals */
@@ -39,7 +39,7 @@ time(20000).
 
 +!verifica_Login_Professor: acessoProfessor(J) & J == false <- //feito uma vez s�, depois do primeiro acesso, 
 	verifica_login_professor;								//o belief do bedel deve ficar como "j� fez login".	
-	.print("acesso professor 1");
+	.print("Teacher access 1");
 	Acessou = true;
 	-+acessoProfessor(Acessou);
 	!verifica_Olho_Fechado.

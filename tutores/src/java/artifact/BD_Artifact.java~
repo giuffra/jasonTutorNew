@@ -69,10 +69,10 @@ public class BD_Artifact extends Artifact {
 					
 		} catch (ClassNotFoundException e) {
 			// Driver n�o encontrado
-			System.out.println("O driver expecificado n�o foi encontrado.");
+			System.out.println("O driver expecificado não foi encontrado.");
 		} catch (SQLException e) {
 			// N�o est� conseguindo se conectar ao banco
-			System.out.println("N�o foi poss�vel conectar ao Banco de Dados");
+			System.out.println("Não foi possível conectar ao Banco de Dados");
 		}
 		return conn;
 	}

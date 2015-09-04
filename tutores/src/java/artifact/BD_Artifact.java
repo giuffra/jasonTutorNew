@@ -19,7 +19,7 @@ public class BD_Artifact extends Artifact {
 
 	Connection conn;
 	boolean counting;
-	final static long TICK_TIME = 5000;// 86400000; //24 horas em milisegundos
+	final static long TICK_TIME = 20;// 86400000; //24 horas em milisegundos
 
 	public void init(int initialValue) {
 		counting = false;

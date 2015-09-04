@@ -30,6 +30,7 @@ public class Bedel_Atc extends db_art {
 
 	@OPERATION
 	public void setIDcourse(int id) {
+		//Procura o id do(s) curso(s) novo(s), que ainda não tem Bedel, para criar o Bedel para ele.
 		idCourse = id;
 		try {
 			ResultSet rs = super.sfw("fullname", "mdl_course", "id=" + id);
@@ -290,23 +291,24 @@ public class Bedel_Atc extends db_art {
 		 * (forum.getString("id"))); //mudar para grade_item
 		 * /***************************
 		 */
-		// avisa para o professor que já deve avaliar, pois passou da data
+		// avisa para o professor que j� deve avaliar, pois passou da data
 		// limite de entrega
 		/*
 		 * } }
 		 */
-		string = "SELECT * FROM mdl_assign WHERE course=" + idCourse;  //mdl_assing tem a lista de tarefas do curso
+		string = "SELECT * FROM mdl_assign WHERE course=" + idCourse;  // VERIFICAR SE ESTÁ USANDO TODAS AS ATIVIDADES AVALIATIVAS
 		ResultSet assignment = this.select(string);
 		while (assignment.next()) {
 			long timestamp = assignment.getLong("duedate");
 			timestamp = timestamp + 10800; // hora de assignment + 3 horas GMT em timestamp
 			long hoje = System.currentTimeMillis() / 1000;
-			if (timestamp <= hoje) { //se a data de entrega já tiver passado
-				id_grade_item_Tarefas_entregues.add(this.converte_item_instance_em_id_grade_item(assignment.getString("id")));
-				//id_grade_item_Tarefas_entregues = adiciona o id_grade_item da tarefa que já passou da data limite.
-
-				
-				// avisa para o professor que já deve avaliar, pois passou da data limite de entrega
+			if (timestamp <= hoje) {
+				id_grade_item_Tarefas_entregues.add(this
+						.converte_item_instance_em_id_grade_item(assignment
+								.getString("id"))); // mudar para grade_item
+													// /****************************/
+				// avisa para o professor que j� deve avaliar, pois passou da
+				// data limite de entrega
 				// Stem.out.println("tarefas entregues "+this.converte_item_instance_em_id_grade_item(assignment.getString("id")));
 			}
 		}
